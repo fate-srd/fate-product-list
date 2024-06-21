@@ -21,3 +21,9 @@ If you are comfortable with editing files and git/Github, you may [create a pull
 1. Be logged into Github.
 2. [Create a new issue.](https://github.com/fate-srd/fate-product-list/issues/new/choose)
 3. Fill out the information in the issue template.
+
+## An important note about DriveThruRPG links
+
+The Fate SRD is financially supported by using DriveThruRPG affiliate links. All DriveThruRPG links in this repo and on the site will use the Fate SRD's affiliate code.
+
+This repo is provided freely to the community. If you use this for your own project and want to change the affiliate code, that is okay.
