@@ -20,7 +20,8 @@ If you are comfortable with editing files and git/Github, you may [create a pull
 
 1. Be logged into Github.
 2. [Create a new issue.](https://github.com/fate-srd/fate-product-list/issues/new/choose)
-3. Fill out the information in the issue template.
+3. Choose the appropriate issue template and fill it out.
+4. Submit the issue.
 
 ## An important note about DriveThruRPG links
 
