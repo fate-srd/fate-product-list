@@ -16,6 +16,6 @@ Fill in the following information for each of your products:
 Example:
 - Title: Deep Dark Blue
 - Publisher: Evil Hat Productions
-- URL: http://drivethrurpg.com/product/175636/Deep-Dark-Blue--A-World-of-Adventure-for-Fate-Core?affiliate_id=144937
+- URL: https://drivethrurpg.com/product/175636/Deep-Dark-Blue--A-World-of-Adventure-for-Fate-Core?affiliate_id=144937
 - URL: https://marketplace.roll20.net/browse/module/5756/deep-dark-blue
 - URL: https://evilhat.itch.io/deep-dark-blue-a-world-of-adventure-for-fate-core
