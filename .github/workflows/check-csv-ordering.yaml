@@ -18,8 +18,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Generate header-free version
+        run: tail -n +2 fate-product-list.csv > headerless.csv
+
       - name: Generate sorted version
-        run: cat fate-product-list.csv | sort > fate-product-list-sorted.csv
+        run: cat headerless.csv | sort > sorted.csv
 
       - name: Compare sorted and actual list
-        run: diff --color -u fate-product-list.csv fate-product-list-sorted.csv
+        run: diff --color -u headerless.csv sorted.csv
