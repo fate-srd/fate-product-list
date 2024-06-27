@@ -1,7 +1,12 @@
 name: Check CSV order
 
 on:
-  pull_request: {}
+
+  push:
+    branches:
+      - ci-check-csv-ordering
+
+  pull_request:
 
 
 jobs:
