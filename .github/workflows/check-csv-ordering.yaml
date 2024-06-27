@@ -25,4 +25,4 @@ jobs:
         run: cat headerless.csv | LC_ALL=en_US.UTF-8 sort > sorted.csv
 
       - name: Compare sorted and actual list
-        run: diff --color -u headerless.csv sorted.csv
+        run: diff --color=always -u headerless.csv sorted.csv
