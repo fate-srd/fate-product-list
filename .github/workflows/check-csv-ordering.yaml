@@ -22,7 +22,7 @@ jobs:
         run: tail -n +2 fate-product-list.csv > headerless.csv
 
       - name: Generate sorted version
-        run: cat headerless.csv | LC_ALL=en_US.UTF-8 sort | sed -e 'd/^$//' > sorted.csv
+        run: cat headerless.csv | LC_ALL=en_US.UTF-8 sort | head -c -1 > sorted.csv
 
       - name: Compare sorted and actual list
         run: diff --color=always -u headerless.csv sorted.csv
