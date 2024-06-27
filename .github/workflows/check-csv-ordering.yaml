@@ -1,0 +1,14 @@
+name: Check CSV order
+
+on:
+  pull_request: {}
+
+
+jobs:
+  check-order:
+    runs-on: [ubuntu-latest]
+
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@v4
