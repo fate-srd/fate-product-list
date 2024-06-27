@@ -20,5 +20,5 @@ jobs:
 
       - name: Diff sorted and unsorted versions
         run: |
-          sort > fate-product-list-sorted.csv
+          cat fate-product-list.csv sort > fate-product-list-sorted.csv
           git diff -- fate-product-list.csv fate-product-list-sorted.csv
