@@ -18,7 +18,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Diff sorted and unsorted versions
-        run: |
-          cat fate-product-list.csv | sort > fate-product-list-sorted.csv
-          git diff -- fate-product-list.csv fate-product-list-sorted.csv
+      - name: Generate sorted version
+        run: cat fate-product-list.csv | sort > fate-product-list-sorted.csv
+
+      - name: Compare sorted and actual list
+        run: git diff -- fate-product-list.csv fate-product-list-sorted.csv
