@@ -22,4 +22,4 @@ jobs:
         run: cat fate-product-list.csv | sort > fate-product-list-sorted.csv
 
       - name: Compare sorted and actual list
-        run: diff -n fate-product-list.csv fate-product-list-sorted.csv
+        run: diff fate-product-list.csv fate-product-list-sorted.csv
