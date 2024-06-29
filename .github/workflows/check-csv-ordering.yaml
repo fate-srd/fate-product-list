@@ -2,10 +2,6 @@ name: Check CSV order
 
 on:
 
-  push:
-    branches:
-      - ci-check-csv-ordering
-
   pull_request:
 
 
