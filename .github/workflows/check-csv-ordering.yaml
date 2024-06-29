@@ -3,6 +3,8 @@ name: Check CSV order
 on:
 
   pull_request:
+    branches:
+      - test-ci-check-csv-ordering
 
 
 jobs:
