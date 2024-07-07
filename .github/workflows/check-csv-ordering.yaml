@@ -12,11 +12,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Generate header-free version
-        run: tail -n +2 fate-product-list.csv > headerless.csv
-
-      - name: Generate sorted version
-        run: LC_ALL=en_US.UTF-8 sort headerless.csv | head -c -1 > sorted.csv
-
-      - name: Compare sorted and actual list
-        run: diff --color=always -u headerless.csv sorted.csv
+      - name: Setup nodejs
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+      - run: npm ci
+      - name: Check ordering
+        run: npm test
