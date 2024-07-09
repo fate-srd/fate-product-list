@@ -16,6 +16,44 @@ The submission will be reviewed and added to the Fate SRD. This usually happens 
 
 If you are comfortable with editing files and git/Github, you may [create a pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request). It will be reviewed and added to the site.
 
+There is a Github check configured to ensure the CSV file is in the expected order. This check is implemented a small
+Javascript script that runs under [Nodejs](https://nodejs.org/) version 20.x, which is required. You will get a warning
+from `npm` if you try this with older versions of Nodejs.
+
+To check the CSV file order locally, before you push your changes to Github, you must have a current version of Nodejs 
+installed, then run the following commands.
+
+```bash
+npm install
+npm test
+```
+
+Example output of successful test:
+```
+% npm test
+
+> fate-product-list@1.0.0 test
+> node scripts/check-csv-order.js
+
+check-csv-order: started.
+check-csv-order: finished, fate-product-list.csv is correctly ordered.
+%
+```
+
+Example output of unsuccessful test:
+```
+% npm test
+
+> fate-product-list@1.0.0 test
+> node scripts/check-csv-order.js
+
+check-csv-order: started.
+Mismatch on record 222:
+ input: "Publisher Name: Modiphius, Product title: Mindjammer: The Mindjammer Companion"
+sorted: "Publisher Name: Modiphius, Product title: Mindjammer: The Core Worlds Sourcebook"
+%
+```
+
 ### Submitting an issue
 
 1. Be logged into Github.
