@@ -17,7 +17,8 @@ The submission will be reviewed and added to the Fate SRD. This usually happens 
 If you are comfortable with editing files and git/Github, you may [create a pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request). It will be reviewed and added to the site.
 
 There is a Github check configured to ensure the CSV file is in the expected order. This check is implemented a small
-Javascript script that runs under [Nodejs](https://nodejs.org/) version 20.x. (The code will probably run under older versions, too.)
+Javascript script that runs under [Nodejs](https://nodejs.org/) version 20.x, which is required. You will get a warning
+from `npm` if you try this with older versions of Nodejs.
 
 To check the CSV file order locally, before you push your changes to Github, you must have a current version of Nodejs 
 installed, then run the following commands.
