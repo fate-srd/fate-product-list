@@ -16,6 +16,10 @@ jobs:
     steps:
       - run: |
           echo The PR was merged
-          echo GITHUB_REF ${GITHUB_REF}
-          echo GITHUB_SHA ${GITHUB_SHA}
+          echo Ref for target branch (BASE branch) GITHUB_REF ${GITHUB_REF}
+          echo SHA for merge commit on target branch (BASE branch) GITHUB_SHA ${GITHUB_SHA}
+          echo SHA for commit the feature branch (HEAD branch) is based on (in history of BASE branch) GITHUB_BASE ${GITHUB_BASE}
+          echo SHA for HEAD of the feature branch (HEAD branch) GITHUB_HEAD ${GITHUB_HEAD}
+          echo This is a base ref of PR: github.event.pull_request.base.sha: ${{ toJson(github.event.pull_request.base.sha) }}
+          echo This is a head ref of PR: github.event.pull_request.head.sha: ${{ toJson(github.event.pull_request.head.sha) }}
           echo ${GITHUB_OBJ} | jq .
