@@ -11,15 +11,19 @@ jobs:
   if_merged:
     if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
-    env:
-      GITHUB_OBJ: ${{ toJson(github) }}
     steps:
       - run: |
           echo The PR was merged
-          echo "Ref for target branch (BASE branch) GITHUB_REF ${GITHUB_REF}"
-          echo "SHA for merge commit on target branch (BASE branch) GITHUB_SHA ${GITHUB_SHA}"
-          echo "SHA for commit the feature branch (HEAD branch) is based on (in history of BASE branch) GITHUB_BASE ${GITHUB_BASE}"
-          echo "SHA for HEAD of the feature branch (HEAD branch) GITHUB_HEAD ${GITHUB_HEAD}"
-          echo "This is a base ref of PR: github.event.pull_request.base.sha: ${{ toJson(github.event.pull_request.base.sha) }}"
-          echo "This is a head ref of PR: github.event.pull_request.head.sha: ${{ toJson(github.event.pull_request.head.sha) }}"
-          echo "${GITHUB_OBJ}" | jq .
+          if git diff --name-only ${{ toJson(github.event.pull_request.base.sha) }} ${{ toJson(github.event.pull_request.head.sha) }} | grep fate-product-list.csv > /dev/null
+          then
+            if npm version -m "Version updated to %s because product list changed."
+            then
+              echo "Version updated to "  $( jq .version package.json ) "."
+              git describe
+            else
+              echo "Couldn't update version for some reason."
+            fi
+          else
+            echo "No changes to product list."
+          fi
+            
