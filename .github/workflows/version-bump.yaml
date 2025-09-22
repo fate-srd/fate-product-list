@@ -5,23 +5,23 @@ on:
     types:
       - closed
     branches:
-      - 'main'
+      - "main"
 
 jobs:
   check_and_bump_version:
     if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
-
       - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          persist-credentials: false
 
       - name: Setup nodejs
         uses: actions/setup-node@v4
         with:
-          node-version: '20.x'
+          node-version: "20.x"
 
       - run: npm ci
 
@@ -39,11 +39,10 @@ jobs:
             if npm version major -m "Version updated to %s because product list changed."
             then
               echo "Version updated to "  $( jq .version package.json ) "."
-              git push --follow-tags
+              git push --follow-tags https://x-access-token:${{ secrets.GH_PAT }}@github.com/fate-srd/fate-product-list.git HEAD:main
             else
               echo "Couldn't update version for some reason."
             fi
           else
             echo "No changes to product list."
           fi
-            
