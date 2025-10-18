@@ -1,15 +1,12 @@
 name: Auto Release on Version Bump
 
 on:
-  workflow_run:
-    workflows: ["Version Bump"]
+  push:
     branches: [main]
-    types: [completed]
 
 jobs:
   check-version-and-release:
     runs-on: ubuntu-latest
-    if: github.event.workflow_run.conclusion == 'success'
 
     steps:
       - name: Checkout code
