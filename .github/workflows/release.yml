@@ -1,0 +1,97 @@
+name: Auto Release on Version Bump
+
+on:
+  workflow_run:
+    workflows: ["Version Bump"]
+    branches: [main]
+    types: [completed]
+
+jobs:
+  check-version-and-release:
+    runs-on: ubuntu-latest
+    if: github.event.workflow_run.conclusion == 'success'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Fetch full history to compare versions
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Get current version
+        id: current-version
+        run: |
+          CURRENT_VERSION=$(node -p "require('./package.json').version")
+          echo "version=$CURRENT_VERSION" >> $GITHUB_OUTPUT
+          echo "Current version: $CURRENT_VERSION"
+
+      - name: Get previous version
+        id: previous-version
+        run: |
+          # Get the version from the previous commit that touched package.json
+          PREVIOUS_VERSION=$(git log -1 --skip=1 --format="%H" -- package.json | xargs -I {} git show {}:package.json | node -p "JSON.parse(require('fs').readFileSync('/dev/stdin', 'utf8')).version")
+          echo "previous-version=$PREVIOUS_VERSION" >> $GITHUB_OUTPUT
+          echo "Previous version: $PREVIOUS_VERSION"
+
+      - name: Check if version increased
+        id: version-check
+        run: |
+          CURRENT="${{ steps.current-version.outputs.version }}"
+          PREVIOUS="${{ steps.previous-version.outputs.previous-version }}"
+
+          # Use node to compare semantic versions
+          COMPARISON=$(node -e "
+            function compareVersions(a, b) {
+              const aParts = a.split('.').map(Number);
+              const bParts = b.split('.').map(Number);
+              const maxLength = Math.max(aParts.length, bParts.length);
+              
+              for (let i = 0; i < maxLength; i++) {
+                const aPart = aParts[i] || 0;
+                const bPart = bParts[i] || 0;
+                if (aPart > bPart) return 1;
+                if (aPart < bPart) return -1;
+              }
+              return 0;
+            }
+            
+            const result = compareVersions('$CURRENT', '$PREVIOUS');
+            console.log(result > 0 ? 'true' : 'false');
+          ")
+
+          echo "version-increased=$COMPARISON" >> $GITHUB_OUTPUT
+          echo "Version comparison: $PREVIOUS -> $CURRENT (increased: $COMPARISON)"
+
+      - name: Create Release
+        if: steps.version-check.outputs.version-increased == 'true'
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ steps.current-version.outputs.version }}
+          release_name: Release v${{ steps.current-version.outputs.version }}
+          body: |
+            ## Changes in v${{ steps.current-version.outputs.version }}
+
+            This is an automated release triggered by the Version Bump workflow.
+
+            **Previous version:** ${{ steps.previous-version.outputs.previous-version }}
+            **New version:** ${{ steps.current-version.outputs.version }}
+
+            Please check the commit history for detailed changes.
+          draft: false
+          prerelease: false
+
+      - name: Comment on success
+        if: steps.version-check.outputs.version-increased == 'true'
+        run: |
+          echo "✅ Successfully created release v${{ steps.current-version.outputs.version }}"
+
+      - name: Comment when no version change
+        if: steps.version-check.outputs.version-increased == 'false'
+        run: |
+          echo "ℹ️ No version increase detected. Current version: ${{ steps.current-version.outputs.version }}"
