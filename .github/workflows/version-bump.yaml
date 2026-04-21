@@ -1,6 +1,7 @@
 name: Version Bump
 
 on:
+  workflow_dispatch:
   pull_request:
     types:
       - closed
@@ -9,7 +10,7 @@ on:
 
 jobs:
   check_and_bump_version:
-    if: github.event.pull_request.merged == true
+    if: github.event_name == 'workflow_dispatch' || github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -29,7 +30,16 @@ jobs:
 
           echo The PR was merged
 
-          if git diff --name-only ${{ toJson(github.event.pull_request.base.sha) }} ${{ toJson(github.event.pull_request.head.sha) }} | grep fate-product-list.csv
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]
+          then
+            BASE_SHA=$(git rev-parse HEAD~1)
+            HEAD_SHA=$(git rev-parse HEAD)
+          else
+            BASE_SHA=${{ toJson(github.event.pull_request.base.sha) }}
+            HEAD_SHA=${{ toJson(github.event.pull_request.head.sha) }}
+          fi
+
+          if git diff --name-only "$BASE_SHA" "$HEAD_SHA" | grep fate-product-list.csv
           then
             # Note: the following account information will not work on GHES
             # Taken from the checkout github action, used above, at https://github.com/actions/checkout
