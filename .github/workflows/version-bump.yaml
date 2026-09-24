@@ -32,15 +32,17 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          echo The PR was merged
-
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]
           then
-            BASE_SHA=$(git rev-parse HEAD~1)
+            # Manual runs should catch product-list changes since the last release,
+            # not only the most recent commit (which is often unrelated).
+            BASE_SHA=$(git describe --tags --abbrev=0)
             HEAD_SHA=$(git rev-parse HEAD)
+            echo "Manual run: comparing since last tag $BASE_SHA"
           else
             BASE_SHA=${{ toJson(github.event.pull_request.base.sha) }}
             HEAD_SHA=${{ toJson(github.event.pull_request.head.sha) }}
+            echo "PR merge: comparing $BASE_SHA..$HEAD_SHA"
           fi
 
           if git diff --name-only "$BASE_SHA" "$HEAD_SHA" | grep fate-product-list.csv
