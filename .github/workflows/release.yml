@@ -3,6 +3,11 @@ name: Auto Release on Version Bump
 on:
   push:
     branches: [main]
+    paths:
+      - "package.json"
+
+permissions:
+  contents: write
 
 jobs:
   check-version-and-release:
@@ -65,23 +70,26 @@ jobs:
 
       - name: Create Release
         if: steps.version-check.outputs.version-increased == 'true'
-        uses: actions/create-release@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: v${{ steps.current-version.outputs.version }}
-          release_name: Release v${{ steps.current-version.outputs.version }}
-          body: |
-            ## Changes in v${{ steps.current-version.outputs.version }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: ${{ steps.current-version.outputs.version }}
+          PREVIOUS_VERSION: ${{ steps.previous-version.outputs.previous-version }}
+        run: |
+          TAG="v$VERSION"
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            echo "Release $TAG already exists; skipping."
+            exit 0
+          fi
+          gh release create "$TAG" \
+            --title "Release $TAG" \
+            --notes "## Changes in $TAG
 
-            This is an automated release triggered by the Version Bump workflow.
+          This is an automated release triggered by a version change.
 
-            **Previous version:** ${{ steps.previous-version.outputs.previous-version }}
-            **New version:** ${{ steps.current-version.outputs.version }}
+          **Previous version:** $PREVIOUS_VERSION
+          **New version:** $VERSION
 
-            Please check the commit history for detailed changes.
-          draft: false
-          prerelease: false
+          Please check the commit history for detailed changes."
 
       - name: Comment on success
         if: steps.version-check.outputs.version-increased == 'true'
